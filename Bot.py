@@ -12,7 +12,9 @@ from moviepy.video.fx.all import crop
 from moviepy.video.fx.all import resize
 import math
 from random import randrange
+from moviepy.config import change_settings
 
+change_settings({"IMAGEMAGICK_BINARY": "C:\Program Files\ImageMagick-6.9.11-Q8\convert.exe"})
 
 def delete_file(path):
     try:
@@ -39,6 +41,10 @@ def generate_clips(video):
 
         while clip_end <= duration:
             temp = clip.subclip(clip_start,clip_end)
+            text = 'Part %s' % str(number)
+            temp_txt = TextClip(text, fontsize=50, color='white') 
+            temp_txt = temp_txt.set_pos('top').set_duration(clip_end)
+            temp = CompositeVideoClip([temp,temp_txt])
             clip_start += 60
             if clip_end == (whole*60):
                 clip_end += 60 * frac
