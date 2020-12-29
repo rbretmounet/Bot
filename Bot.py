@@ -15,7 +15,11 @@ from random import randrange
 
 
 def delete_file(path):
-    os.remove(str(path))
+    try:
+        os.remove(str(path))
+    except :
+        print("Incorrect file name.")
+    
     
 def generate_clips(video):
     video_path = "raw_videos/%s" % str(video)
@@ -132,7 +136,7 @@ if isExistLogin:
     time.sleep(60)
     browser.quit()
 else:
-    print('You are already logged in')
+    print('You are logged in!')
     while True:        
         if len(os.listdir('final_videos')) != 0:
             wait_time = randrange(1,6) * 3600
@@ -142,20 +146,18 @@ else:
             browser.get("https://www.tiktok.com/foryou")
             file_path = "final_videos/%s" % edited_clips[0]
             delete_file(file_path)
-            print('Video Successfully Uploaded.')
+            print('Video Successfully Uploaded!')
             print("Next video will upload in: "+ str((wait_time/3600)) + "hr(s)")
             time.sleep(wait_time)
         else:
-            print('No more videos')
-            print('Adding new video')
             if len(os.listdir('raw_videos')) != 0:
+                print("Editing New Videos...")
                 raw_clips = os.listdir("raw_videos")
                 generate_clips(raw_clips[0])
                 file_path = "raw_videos/%s" % raw_clips[0]
                 delete_file(file_path)
+                print("New videos Added!")
             else:
+                print("Downloading new videos from playlist...")
                 download_new_videos()
-                raw_clips = os.listdir("raw_videos")
-                generate_clips(raw_clips[0])
-                file_path = "raw_videos/%s" % raw_clips[0]
-                delete_file(file_path)
+
