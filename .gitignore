@@ -2,3 +2,5 @@
 downloaded/
 Videos/
 selenium/
+.client_secrets.json
+.env
