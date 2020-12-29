@@ -9,9 +9,41 @@ import os
 import youtube_dl
 from googleapiclient.discovery import build
 from decouple import config
+from moviepy.editor import *
+from moviepy.video.fx.all import crop
+import math
+
 API_KEY = config('YT_API_KEY')
 
 YOUTUBE = build('youtube', 'v3', developerKey=API_KEY)
+
+def generate_clips(video):
+    video_path = "raw_videos/%s.mp4" % str(video)
+    clip = VideoFileClip(video_path) 
+    clip = crop(clip,y2=640)
+    duration = clip.duration
+    clip_start = 0
+    clip_end = 60
+    number = 1
+    if duration > 31:
+        trim = duration - 31
+    clip = clip.subclip(clip_start,trim)
+    duration = clip.duration
+    if duration > 60:
+        parts = duration/60
+        frac, whole = math.modf(parts)
+
+        while clip_end <= duration:
+            temp = clip.subclip(clip_start,clip_end)
+            clip_start += 60
+            if clip_end == (whole*60):
+                clip_end += 60 * frac
+            else:
+                clip_end += 60 
+            output = "final_videos/clip%s.mp4"  % str(number)
+            temp.write_videofile(output)
+            number += 1
+
 
 def sort_playlist(playlist_id, videos):
     nextPageToken = None
@@ -66,9 +98,13 @@ def isElementExist(browser, element):
         flag = False
         return flag
 
-def download_new_videos():
-    with youtube_dl.YoutubeDL({}) as ydl:
-        ydl.download(['https://www.youtube.com/playlist?list=PLjTI-fmjC4hWzJWz4_GTx1OzU8IZPUpfO'])
+def download_new_videos(videos):
+    ydl_opts = {
+        'outtmpl': 'raw_videos/download.mp4'
+    }
+    for video in videos[:10]:
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([video['url']])
 
 def upload_video(browser):
     path = str(pathlib.Path(__file__).parent.absolute())
@@ -92,7 +128,7 @@ def upload_video(browser):
         EC.presence_of_all_elements_located((By.CLASS_NAME, 'upload-btn-input'))
     )
     video_upload_button = browser.find_element_by_class_name('upload-btn-input')
-    video_upload_button.send_keys(path + '\\downloaded\\main.mp4')
+    video_upload_button.send_keys(path + '\\final_videos\\main.mp4')
 
     WebDriverWait(browser, 100).until_not(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.button.disabled.jsx-352266594'))
@@ -117,21 +153,30 @@ options.add_argument("user-data-dir=selenium")
 
 PATH = "C:\chromedriver.exe"
 
-browser = webdriver.Chrome(PATH, options=options)
+#browser = webdriver.Chrome(PATH, options=options)
 
-browser.get("https://www.tiktok.com/foryou")
+#browser.get("https://www.tiktok.com/foryou")
 
-isExistLogin = isElementExist(browser, '.login-button')
-
-if isExistLogin:
-    login_button = browser.find_element_by_class_name('login-button')
-    login_button.click()
-    print('You have 1 minute to login and relaunch')
-    time.sleep(60)
-    browser.quit()
-else:
-    print('You are already logged in')
-    while len(os.listdir('Videos')) != 0:
-        upload_video(browser)
-    print('No more videos')
+#isExistLogin = isElementExist(browser, '.login-button')
+videos = []
+#sort_playlist(playlist_id, videos)
+generate_clips("clip4")
+# if isExistLogin:
+#     login_button = browser.find_element_by_class_name('login-button')
+#     login_button.click()
+#     print('You have 1 minute to login and relaunch')
+#     time.sleep(60)
+#     browser.quit()
+# else:
+#     print('You are already logged in')
+#     while len(os.listdir('final_videos')) != 0:
+#         upload_video(browser)
+#     print('No more videos')
+#     print('Adding new video')
+#     if len(os.listdir('final_videos')) == 0:
+#         download_new_videos(videos)
+#     else:
+#         #take raw_video and generate clips.
+#         generate_clips()
+    
     # Execute code to add new video and delete previous clips

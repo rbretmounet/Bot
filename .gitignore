@@ -1,6 +1,7 @@
 .debug.log
 downloaded/
-Videos/
+final_videos/
+raw_videos/
 selenium/
 .client_secrets.json
 .env
