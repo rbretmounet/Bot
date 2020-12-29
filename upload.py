@@ -17,6 +17,12 @@ API_KEY = config('YT_API_KEY')
 
 YOUTUBE = build('youtube', 'v3', developerKey=API_KEY)
 
+def delete_files(path):
+    if os.path.exists(str(path)):
+        os.remove(str(path))
+    else:
+        print("The file does not exist")
+
 def generate_clips(video):
     video_path = "raw_videos/%s.mp4" % str(video)
     clip = VideoFileClip(video_path) 
@@ -43,6 +49,7 @@ def generate_clips(video):
             output = "final_videos/clip%s.mp4"  % str(number)
             temp.write_videofile(output)
             number += 1
+    video = None
 
 
 def sort_playlist(playlist_id, videos):
@@ -161,6 +168,7 @@ PATH = "C:\chromedriver.exe"
 videos = []
 #sort_playlist(playlist_id, videos)
 generate_clips("clip4")
+delete_files("raw_videos/clip4.mp4")
 # if isExistLogin:
 #     login_button = browser.find_element_by_class_name('login-button')
 #     login_button.click()
