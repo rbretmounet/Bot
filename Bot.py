@@ -10,6 +10,7 @@ import youtube_dl
 from googleapiclient.discovery import build
 from moviepy.editor import *
 from moviepy.video.fx.all import crop
+from moviepy.video.fx.all import resize
 import math
 from random import randrange
 
@@ -24,7 +25,7 @@ def delete_file(path):
 def generate_clips(video):
     video_path = "raw_videos/%s" % str(video)
     clip = VideoFileClip(video_path) 
-    clip = crop(clip,y2=640)
+    clip = crop(clip,y2=635)
     duration = clip.duration
     clip_start = 0
     clip_end = 60
@@ -107,7 +108,7 @@ def upload_video(browser,video):
 
     # Adds video description
     video_title_input = browser.find_element_by_class_name("public-DraftStyleDefault-block")
-    myFile = open(path + "\\downloaded\\desc.txt", "rt")
+    myFile = open(path + "desc.txt", "rt")
     contents = str(myFile.read())
 
     myFile.close()
