@@ -62,8 +62,7 @@ def download_new_videos():
         'outtmpl': 'raw_videos/%(title)s.mp4',
         'ignoreerrors': True,
         'max_downloads': 10,
-        'download_archive': 'archive'
-
+        'download_archive': 'archive',
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download(["https://www.youtube.com/playlist?list=PLjTI-fmjC4hWzJWz4_GTx1OzU8IZPUpfO"])
@@ -116,40 +115,38 @@ options.add_argument("user-data-dir=selenium")
 
 PATH = "C:\chromedriver.exe"
 
-#browser = webdriver.Chrome(PATH, options=options)
+browser = webdriver.Chrome(PATH, options=options)
 
-#browser.get("https://www.tiktok.com/foryou")
+browser.get("https://www.tiktok.com/foryou")
 
-#isExistLogin = isElementExist(browser, '.login-button')
+isExistLogin = isElementExist(browser, '.login-button')
 
-# if isExistLogin:
-#     login_button = browser.find_element_by_class_name('login-button')
-#     login_button.click()
-#     print('You have 1 minute to login and relaunch')
-#     time.sleep(60)
-#     browser.quit()
-# else:
-#     print('You are already logged in')
-#     while True:        
-#         if len(os.listdir('final_videos')) != 0:
-#             wait_time = randrange(6) * 3600
-#             edited_clips = os.listdir("final_videos")
-#             upload_video(browser,edited_clips[0])
-#             browser.get("https://www.tiktok.com/foryou")
-#             file_path = "final_videos/%s" % edited_clips[0]
-#             delete_file(file_path)
-#             time.sleep(wait_time)
-#         else:
-#             print('No more videos')
-#             print('Adding new video')
-#             if len(os.listdir('raw_videos')) != 0:
-#                 raw_clips = os.listdir("raw_videos")
-#                 generate_clips(raw_clips[0])
-#                 delete_file(raw_clips[0])
-#             else:
-#                 download_new_videos(videos)
-
-        #take raw_video and generate clips.
-        #
-    
-    # Execute code to add new video and delete previous clips
+if isExistLogin:
+    login_button = browser.find_element_by_class_name('login-button')
+    login_button.click()
+    print('You have 1 minute to login and relaunch')
+    time.sleep(60)
+    browser.quit()
+else:
+    print('You are already logged in')
+    while True:        
+        if len(os.listdir('final_videos')) != 0:
+            wait_time = randrange(6) * 3600
+            edited_clips = os.listdir("final_videos")
+            upload_video(browser,edited_clips[0])
+            browser.get("https://www.tiktok.com/foryou")
+            file_path = "final_videos/%s" % edited_clips[0]
+            delete_file(file_path)
+            time.sleep(wait_time)
+        else:
+            print('No more videos')
+            print('Adding new video')
+            if len(os.listdir('raw_videos')) != 0:
+                raw_clips = os.listdir("raw_videos")
+                generate_clips(raw_clips[0])
+                delete_file(raw_clips[0])
+            else:
+                download_new_videos()
+                raw_clips = os.listdir("raw_videos")
+                generate_clips(raw_clips[0])
+                delete_file(raw_clips[0])
