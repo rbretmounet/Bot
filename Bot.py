@@ -113,7 +113,7 @@ def upload_video(browser,video):
 
     # Adds video description
     video_title_input = browser.find_element_by_class_name("public-DraftStyleDefault-block")
-    myFile = open(path + "desc.txt", "rt")
+    myFile = open(path + "\desc.txt", "rt")
     contents = str(myFile.read())
 
     myFile.close()
