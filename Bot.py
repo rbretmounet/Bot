@@ -135,7 +135,7 @@ else:
     print('You are already logged in')
     while True:        
         if len(os.listdir('final_videos')) != 0:
-            wait_time = randrange(6) * 3600
+            wait_time = randrange(1,6) * 3600
             print("Uploading Video...")
             edited_clips = os.listdir("final_videos")
             upload_video(browser,edited_clips[0])
@@ -143,7 +143,7 @@ else:
             file_path = "final_videos/%s" % edited_clips[0]
             delete_file(file_path)
             print('Video Successfully Uploaded.')
-            print("Next video will upload in: "+ (wait_time/3600) + "hr(s)")
+            print("Next video will upload in: "+ str((wait_time/3600)) + "hr(s)")
             time.sleep(wait_time)
         else:
             print('No more videos')
@@ -151,7 +151,8 @@ else:
             if len(os.listdir('raw_videos')) != 0:
                 raw_clips = os.listdir("raw_videos")
                 generate_clips(raw_clips[0])
-                delete_file(raw_clips[0])
+                file_path = "raw_videos/%s" % raw_clips[0]
+                delete_file(file_path)
             else:
                 download_new_videos()
                 raw_clips = os.listdir("raw_videos")
