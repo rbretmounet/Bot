@@ -121,8 +121,7 @@ PATH = "C:\chromedriver.exe"
 #browser.get("https://www.tiktok.com/foryou")
 
 #isExistLogin = isElementExist(browser, '.login-button')
-#sort_playlist(playlist_id, videos)
-download_new_videos()
+
 # if isExistLogin:
 #     login_button = browser.find_element_by_class_name('login-button')
 #     login_button.click()
