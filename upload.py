@@ -8,16 +8,13 @@ import pathlib
 import os
 import youtube_dl
 from googleapiclient.discovery import build
-from decouple import config
 from moviepy.editor import *
 from moviepy.video.fx.all import crop
 import math
+from random import randrange
 
-API_KEY = config('YT_API_KEY')
 
-YOUTUBE = build('youtube', 'v3', developerKey=API_KEY)
-
-def delete_files(path):
+def delete_file(path):
     if os.path.exists(str(path)):
         os.remove(str(path))
     else:
@@ -51,51 +48,6 @@ def generate_clips(video):
             number += 1
     video = None
 
-
-def sort_playlist(playlist_id, videos):
-    nextPageToken = None
-    while True:
-        pl_request = YOUTUBE.playlistItems().list(
-            part='contentDetails',
-            playlistId=playlist_id,
-            maxResults=50,
-            pageToken=nextPageToken
-        )
-
-        pl_response = pl_request.execute()
-
-        vid_ids = []
-        for item in pl_response['items']:
-            vid_ids.append(item['contentDetails']['videoId'])
-
-        vid_request = YOUTUBE.videos().list(
-            part="statistics",
-            id=','.join(vid_ids)
-        )
-
-        vid_response = vid_request.execute()
-
-        for item in vid_response['items']:
-            vid_views = item['statistics']['viewCount']
-
-            vid_id = item['id']
-            yt_link = f'https://youtu.be/{vid_id}'
-
-            videos.append(
-                {
-                    'views': int(vid_views),
-                    'url': yt_link
-                }
-            )
-
-        nextPageToken = pl_response.get('nextPageToken')
-
-        if not nextPageToken:
-            break
-
-    videos.sort(key=lambda vid: vid['views'], reverse=True)
-
-
 def isElementExist(browser, element):
     flag = True
     try:
@@ -105,15 +57,19 @@ def isElementExist(browser, element):
         flag = False
         return flag
 
-def download_new_videos(videos):
+def download_new_videos():
     ydl_opts = {
-        'outtmpl': 'raw_videos/download.mp4'
-    }
-    for video in videos[:10]:
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([video['url']])
+        'outtmpl': 'raw_videos/%(title)s.mp4',
+        'ignoreerrors': True,
+        'max_downloads': 10,
+        'download_archive': 'archive'
 
-def upload_video(browser):
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download(["https://www.youtube.com/playlist?list=PLjTI-fmjC4hWzJWz4_GTx1OzU8IZPUpfO"])
+
+
+def upload_video(browser,video):
     path = str(pathlib.Path(__file__).parent.absolute())
     # Close Verification Window:
     WebDriverWait(browser, 100).until(
@@ -135,7 +91,8 @@ def upload_video(browser):
         EC.presence_of_all_elements_located((By.CLASS_NAME, 'upload-btn-input'))
     )
     video_upload_button = browser.find_element_by_class_name('upload-btn-input')
-    video_upload_button.send_keys(path + '\\final_videos\\main.mp4')
+    video_path = "\\final_videos\\%s" % video
+    video_upload_button.send_keys(path + video_path)
 
     WebDriverWait(browser, 100).until_not(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.button.disabled.jsx-352266594'))
@@ -153,7 +110,6 @@ def upload_video(browser):
     submit_button = browser.find_element_by_class_name('btn-post')
     submit_button.click()
 
-playlist_id = 'PLjTI-fmjC4hWzJWz4_GTx1OzU8IZPUpfO'
 
 options = Options()
 options.add_argument("user-data-dir=selenium")
@@ -165,10 +121,8 @@ PATH = "C:\chromedriver.exe"
 #browser.get("https://www.tiktok.com/foryou")
 
 #isExistLogin = isElementExist(browser, '.login-button')
-videos = []
 #sort_playlist(playlist_id, videos)
-generate_clips("clip4")
-delete_files("raw_videos/clip4.mp4")
+download_new_videos()
 # if isExistLogin:
 #     login_button = browser.find_element_by_class_name('login-button')
 #     login_button.click()
@@ -177,14 +131,26 @@ delete_files("raw_videos/clip4.mp4")
 #     browser.quit()
 # else:
 #     print('You are already logged in')
-#     while len(os.listdir('final_videos')) != 0:
-#         upload_video(browser)
-#     print('No more videos')
-#     print('Adding new video')
-#     if len(os.listdir('final_videos')) == 0:
-#         download_new_videos(videos)
-#     else:
-#         #take raw_video and generate clips.
-#         generate_clips()
+#     while True:        
+#         if len(os.listdir('final_videos')) != 0:
+#             wait_time = randrange(6) * 3600
+#             edited_clips = os.listdir("final_videos")
+#             upload_video(browser,edited_clips[0])
+#             browser.get("https://www.tiktok.com/foryou")
+#             file_path = "final_videos/%s" % edited_clips[0]
+#             delete_file(file_path)
+#             time.sleep(wait_time)
+#         else:
+#             print('No more videos')
+#             print('Adding new video')
+#             if len(os.listdir('raw_videos')) != 0:
+#                 raw_clips = os.listdir("raw_videos")
+#                 generate_clips(raw_clips[0])
+#                 delete_file(raw_clips[0])
+#             else:
+#                 download_new_videos(videos)
+
+        #take raw_video and generate clips.
+        #
     
     # Execute code to add new video and delete previous clips

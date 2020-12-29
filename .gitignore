@@ -5,3 +5,4 @@ raw_videos/
 selenium/
 .client_secrets.json
 .env
+.archive
