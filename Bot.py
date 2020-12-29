@@ -136,11 +136,14 @@ else:
     while True:        
         if len(os.listdir('final_videos')) != 0:
             wait_time = randrange(6) * 3600
+            print("Uploading Video...")
             edited_clips = os.listdir("final_videos")
             upload_video(browser,edited_clips[0])
             browser.get("https://www.tiktok.com/foryou")
             file_path = "final_videos/%s" % edited_clips[0]
             delete_file(file_path)
+            print('Video Successfully Uploaded.')
+            print("Next video will upload in: "+ (wait_time/3600) + "hr(s)")
             time.sleep(wait_time)
         else:
             print('No more videos')
