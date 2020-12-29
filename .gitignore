@@ -6,3 +6,4 @@ selenium/
 .client_secrets.json
 .env
 archive
+debug.log

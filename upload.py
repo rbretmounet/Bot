@@ -15,13 +15,10 @@ from random import randrange
 
 
 def delete_file(path):
-    if os.path.exists(str(path)):
-        os.remove(str(path))
-    else:
-        print("The file does not exist")
-
+    os.remove(str(path))
+    
 def generate_clips(video):
-    video_path = "raw_videos/%s.mp4" % str(video)
+    video_path = "raw_videos/%s" % str(video)
     clip = VideoFileClip(video_path) 
     clip = crop(clip,y2=640)
     duration = clip.duration
@@ -46,7 +43,8 @@ def generate_clips(video):
             output = "final_videos/clip%s.mp4"  % str(number)
             temp.write_videofile(output)
             number += 1
-    video = None
+    clip.close()
+    temp.close()
 
 def isElementExist(browser, element):
     flag = True
@@ -59,23 +57,29 @@ def isElementExist(browser, element):
 
 def download_new_videos():
     ydl_opts = {
-        'outtmpl': 'raw_videos/%(title)s.mp4',
+        'outtmpl': 'raw_videos/%(id)s.mp4',
         'ignoreerrors': True,
         'max_downloads': 10,
         'download_archive': 'archive',
+        'format': 'best',
     }
+    
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download(["https://www.youtube.com/playlist?list=PLjTI-fmjC4hWzJWz4_GTx1OzU8IZPUpfO"])
+        try:
+            ydl.download(["https://www.youtube.com/playlist?list=PLjTI-fmjC4hWzJWz4_GTx1OzU8IZPUpfO"])
+        except:
+            return
+    
 
 
 def upload_video(browser,video):
     path = str(pathlib.Path(__file__).parent.absolute())
     # Close Verification Window:
-    WebDriverWait(browser, 100).until(
-        EC.presence_of_all_elements_located((By.CLASS_NAME, 'verify-bar-close'))
-    )
-    verification_button = browser.find_element_by_class_name('verify-bar-close')
-    verification_button.click()
+    # WebDriverWait(browser, 100).until(
+    #     EC.presence_of_all_elements_located((By.CLASS_NAME, 'verify-bar-close'))
+    # )
+    # verification_button = browser.find_element_by_class_name('verify-bar-close')
+    # verification_button.click()
 
     # Open Upload Menu
     WebDriverWait(browser, 100).until(
@@ -149,4 +153,5 @@ else:
                 download_new_videos()
                 raw_clips = os.listdir("raw_videos")
                 generate_clips(raw_clips[0])
-                delete_file(raw_clips[0])
+                file_path = "raw_videos/%s" % raw_clips[0]
+                delete_file(file_path)
