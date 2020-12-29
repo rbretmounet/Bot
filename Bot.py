@@ -7,7 +7,6 @@ import time
 import pathlib
 import os
 import youtube_dl
-from googleapiclient.discovery import build
 from moviepy.editor import *
 from moviepy.video.fx.all import crop
 from moviepy.video.fx.all import resize
