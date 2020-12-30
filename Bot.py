@@ -13,6 +13,7 @@ from moviepy.video.fx.all import resize
 import math
 from random import randrange
 from moviepy.config import change_settings
+from datetime import datetime,date
 
 change_settings({"IMAGEMAGICK_BINARY": "C:\Program Files\ImageMagick-6.9.11-Q8\convert.exe"})
 
@@ -145,16 +146,31 @@ else:
     print('You are logged in!')
     while True:        
         if len(os.listdir('final_videos')) != 0:
-            wait_time = randrange(1,6) * 3600
-            print("Uploading Video...")
-            edited_clips = os.listdir("final_videos")
-            upload_video(browser,edited_clips[0])
-            browser.get("https://www.tiktok.com/foryou")
-            file_path = "final_videos/%s" % edited_clips[0]
-            delete_file(file_path)
-            print('Video Successfully Uploaded!')
-            print("Next video will upload in: "+ str((wait_time/3600)) + "hr(s)")
-            time.sleep(wait_time)
+            current_time = datetime.now().time()
+            min_time = datetime.now().time()
+            max_time = datetime.now().time()
+            min_time = current_time.replace(hour=15,minute=0,second=0,microsecond=0)
+            max_time = current_time.replace(hour=23,minute=0,second=0,microsecond=0)
+            if current_time > min_time and current_time < max_time: 
+                wait_time = randrange(1,6) * 3600
+                print("Uploading Video...")
+                edited_clips = os.listdir("final_videos")
+                upload_video(browser,edited_clips[0])
+                browser.get("https://www.tiktok.com/foryou")
+                file_path = "final_videos/%s" % edited_clips[0]
+                delete_file(file_path)
+                print('Video Successfully Uploaded!')
+                print("Next video will upload in: "+ str((wait_time/3600)) + "hr(s)")
+                time.sleep(wait_time)
+            else:
+                if current_time < min_time:
+                    wait_time = datetime.combine(date.min, min_time) - datetime.combine(date.min, current_time)
+                else:
+                    wait_time = datetime.combine(date.min, current_time) - datetime.combine(date.min, min_time)
+                wait_time = wait_time.total_seconds()   
+                print("Not the right time to upload.") 
+                print("Waiting " + str(wait_time) + "hr(s) to upload")
+                time.sleep(wait_time)
         else:
             if len(os.listdir('raw_videos')) != 0:
                 print("Editing New Videos...")
