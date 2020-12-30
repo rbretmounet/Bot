@@ -44,7 +44,7 @@ def generate_clips(video):
             temp = clip.subclip(clip_start,clip_end)
             text = 'Part %s' % str(number)
             temp_txt = TextClip(text, fontsize=50, color='white') 
-            temp_txt = temp_txt.set_pos('top').set_duration(clip_end)
+            temp_txt = temp_txt.set_pos('top').set_duration(clip_end-clip_start)
             temp = CompositeVideoClip([temp,temp_txt])
             clip_start += 60
             if clip_end == (whole*60):
