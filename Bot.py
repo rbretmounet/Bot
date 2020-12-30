@@ -13,7 +13,7 @@ from moviepy.video.fx.all import resize
 import math
 from random import randrange
 from moviepy.config import change_settings
-from datetime import datetime,date
+from datetime import datetime,date,timedelta
 
 change_settings({"IMAGEMAGICK_BINARY": "C:\Program Files\ImageMagick-6.9.11-Q8\convert.exe"})
 
@@ -166,7 +166,10 @@ else:
                 if current_time < min_time:
                     wait_time = datetime.combine(date.min, min_time) - datetime.combine(date.min, current_time)
                 else:
-                    wait_time = datetime.combine(date.min, current_time) - datetime.combine(date.min, min_time)
+                    wait_time = datetime.combine(date.min, current_time) - datetime.combine(date.min, max_time)
+                    hours = int(min_time.strftime('%H'))
+                    time_added = timedelta(hours=hours)
+                    wait_time = wait_time + time_added
                 wait_time = wait_time.total_seconds()   
                 print("Not the right time to upload.") 
                 print("Waiting " + str(wait_time) + "hr(s) to upload")
