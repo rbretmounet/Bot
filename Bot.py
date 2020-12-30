@@ -159,7 +159,7 @@ else:
                 browser.get("https://www.tiktok.com/foryou")
                 file_path = "final_videos/%s" % edited_clips[0]
                 delete_file(file_path)
-                print('Video Successfully Uploaded!')
+                print('Video Successfully Uploaded! Timestamp: ' + current_time.strftime("%H:%M:%S"))
                 print("Next video will upload in: "+ str((wait_time/3600)) + "hr(s)")
                 time.sleep(wait_time)
             else:
