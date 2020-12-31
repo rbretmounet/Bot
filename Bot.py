@@ -24,10 +24,13 @@ def delete_file(path):
         print("Incorrect file name.")
     
 def add_desc(desc):
-    with open('desc.txt', 'r+') as f:
-        f.truncate(0)
-        f.write(desc)
-        f.close()
+    try:
+        with open('desc.txt', 'r+') as f:
+            f.truncate(0)
+            f.write(desc)
+            f.close()
+    except:
+        print("File does not exist.")
 
 
 def generate_clips(video):
