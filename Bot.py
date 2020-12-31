@@ -23,7 +23,14 @@ def delete_file(path):
     except :
         print("Incorrect file name.")
     
-    
+def add_desc(desc):
+    with open('desc.txt', 'r+') as f:
+        f.truncate(0)
+        f.write(desc)
+        print(desc)
+        f.close()
+
+
 def generate_clips(video):
     video_path = "raw_videos/%s" % str(video)
     clip = VideoFileClip(video_path) 
@@ -68,13 +75,12 @@ def isElementExist(browser, element):
 
 def download_new_videos():
     ydl_opts = {
-        'outtmpl': 'raw_videos/%(id)s.mp4',
+        'outtmpl': 'raw_videos/%(title)s.mp4',
         'ignoreerrors': True,
-        'max_downloads': 10,
+        'max_downloads': 2,
         'download_archive': 'archive',
         'format': 'best',
     }
-    
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         try:
             ydl.download(["https://www.youtube.com/playlist?list=PLjTI-fmjC4hWzJWz4_GTx1OzU8IZPUpfO"])
@@ -178,6 +184,9 @@ else:
             if len(os.listdir('raw_videos')) != 0:
                 print("Editing New Videos...")
                 raw_clips = os.listdir("raw_videos")
+                title = raw_clips[0].split('(')
+                description = "Follow for more great movie clips! Movie: " + title[0] + "#movies #movie #film #cinema #films #actor #hollywood" 
+                add_desc(description)
                 generate_clips(raw_clips[0])
                 file_path = "raw_videos/%s" % raw_clips[0]
                 delete_file(file_path)
