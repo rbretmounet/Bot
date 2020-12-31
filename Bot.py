@@ -27,7 +27,6 @@ def add_desc(desc):
     with open('desc.txt', 'r+') as f:
         f.truncate(0)
         f.write(desc)
-        print(desc)
         f.close()
 
 
