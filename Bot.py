@@ -94,11 +94,9 @@ def download_new_videos():
 def upload_video(browser,video):
     path = str(pathlib.Path(__file__).parent.absolute())
     # Close Verification Window:
-    # WebDriverWait(browser, 100).until(
-    #     EC.presence_of_all_elements_located((By.CLASS_NAME, 'verify-bar-close'))
-    # )
-    # verification_button = browser.find_element_by_class_name('verify-bar-close')
-    # verification_button.click()
+    if browser.find_element_by_class_name('verify-bar-close'):
+        verification_button = browser.find_element_by_class_name('verify-bar-close')
+        verification_button.click()
 
     # Open Upload Menu
     WebDriverWait(browser, 100).until(
