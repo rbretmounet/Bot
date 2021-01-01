@@ -152,6 +152,7 @@ if isExistLogin:
     browser.quit()
 else:
     print('You are logged in!')
+    browser.close()
     while True:        
         if len(os.listdir('final_videos')) != 0:
             current_time = datetime.now().time()
@@ -163,12 +164,14 @@ else:
                 wait_time = randrange(1,6) * 3600
                 print("Uploading Video...")
                 edited_clips = os.listdir("final_videos")
-                upload_video(browser,edited_clips[0])
+                browser = webdriver.Chrome(PATH, options=options)
                 browser.get("https://www.tiktok.com/foryou")
+                upload_video(browser,edited_clips[0])
+                browser.close()
                 file_path = "final_videos/%s" % edited_clips[0]
                 delete_file(file_path)
                 print('Video Successfully Uploaded! Timestamp: ' + current_time.strftime("%H:%M:%S"))
-                print("Next video will upload in: "+ str((wait_time/3600)) + "hr(s)")
+                print("Next video will upload in: " + str((wait_time/3600)) + "hr(s)")
                 time.sleep(wait_time)
             else:
                 if current_time < min_time:
