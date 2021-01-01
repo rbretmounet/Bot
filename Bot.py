@@ -94,7 +94,8 @@ def download_new_videos():
 def upload_video(browser,video):
     path = str(pathlib.Path(__file__).parent.absolute())
     # Close Verification Window:
-    if browser.find_element_by_class_name('verify-bar-close'):
+    
+    if isElementExist(browser, 'verify-bar-close'):
         verification_button = browser.find_element_by_class_name('verify-bar-close')
         verification_button.click()
 
