@@ -182,7 +182,7 @@ else:
                     wait_time = wait_time + time_added
                 wait_time = wait_time.total_seconds()   
                 print("Not the right time to upload.") 
-                print("Waiting " + str(wait_time) + "hr(s) to upload")
+                print("Waiting " + str(wait_time/3600) + "hr(s) to upload")
                 time.sleep(wait_time)
         else:
             if len(os.listdir('raw_videos')) != 0:
