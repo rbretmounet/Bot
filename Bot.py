@@ -79,7 +79,7 @@ def download_new_videos():
     ydl_opts = {
         'outtmpl': 'raw_videos/%(title)s.mp4',
         'ignoreerrors': True,
-        'max_downloads': 2,
+        'max_downloads': 10,
         'download_archive': 'archive',
         'format': 'best',
     }
