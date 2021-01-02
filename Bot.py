@@ -81,7 +81,7 @@ def download_new_videos():
         'ignoreerrors': True,
         'max_downloads': 10,
         'download_archive': 'archive',
-        'format': 'best',
+        'format': '22',
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         try:
